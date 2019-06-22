@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+class QStringList;
 
 namespace Ui {
 class MainWindow;
@@ -15,10 +16,16 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
 private:
+    const QString m_DownloadBaseURL = "https://trdwll.com/f/Game/bin/";
+    const QString m_UpdateCheckURL = "https://trdwll.com/f/Game/version.txt";
+
     bool HasUpdate();
 
-    void DownloadFile(const QString& URL, const QString& FileName, const QString& DownloadLocation);
+    void InitDownload();
+
+    bool DownloadFile(const QString& URL, const QString& FileName, const QString& DownloadLocation);
 
     // Store a reference for a temporary directory so we can delete it on cleanup
     QString m_tmpDir;

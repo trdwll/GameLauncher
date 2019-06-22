@@ -1,7 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <user.h>
+
+#include <QStringList>
 #include <QMessageBox>
 #include <QDir>
+#include <QDebug>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -18,10 +22,23 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_btnPlay_clicked()
 {
-    DownloadFile("https://trdwll.com/f/lol.patch", "Cool.exe");
+    User* const user = new User(this, "trdwll", "temp12134");
+    if (user->Login())
+    {
+        qDebug() << "User has been authorized";
+        DownloadFile("https://trdwll.com/f/lol.patch", "Cool.exe", "tmpDir");
+        ui->label->setText(user->GetUsername());
+    }
+    else
+    {
+        ui->label->setText("Unable to login");
+        qDebug() << "User hasn't been authenticated";
+    }
+
+    // delete user;
 }
 
-void MainWindow::DownloadFile(const QString &URL, const QString &FileName, const QString &Downloadlocation)
+bool MainWindow::DownloadFile(const QString &URL, const QString &FileName, const QString &Downloadlocation)
 {
     //if (!HasUpdate())
     //{
@@ -34,6 +51,8 @@ void MainWindow::DownloadFile(const QString &URL, const QString &FileName, const
     {
         QDir().mkdir(Downloadlocation);
     }
+
+    return false;
 }
 
 void MainWindow::Patch(const QString &OldDir, const QString &NewDir, const QString &PatchFileName)
@@ -49,11 +68,15 @@ void MainWindow::Patch(const QString &OldDir, const QString &NewDir, const QStri
     {
         QDir().mkdir(NewDir);
     }
-
-
 }
 
 bool MainWindow::HasUpdate()
 {
     return false;
 }
+
+void MainWindow::InitDownload()
+{
+
+}
+

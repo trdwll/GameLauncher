@@ -6,21 +6,33 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>255</width>
-    <height>166</height>
+    <width>604</width>
+    <height>384</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>604</width>
+    <height>384</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>604</width>
+    <height>384</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>GameLauncher</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="btnPlay">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>90</y>
+      <x>500</x>
+      <y>320</y>
       <width>91</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -30,9 +42,9 @@
    <widget class="QProgressBar" name="pbDownload">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>90</y>
-      <width>118</width>
+      <x>20</x>
+      <y>330</y>
+      <width>481</width>
       <height>23</height>
      </rect>
     </property>
@@ -40,18 +52,67 @@
      <number>0</number>
     </property>
    </widget>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>581</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Game</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>News</string>
+     </attribute>
+    </widget>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>0</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <zorder>tabWidget</zorder>
+   <zorder>btnPlay</zorder>
+   <zorder>pbDownload</zorder>
+   <zorder>label</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>255</width>
+     <width>604</width>
      <height>21</height>
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

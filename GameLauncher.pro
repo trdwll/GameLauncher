@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,13 +25,55 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        http.cpp \
+        libHDiffPatch/HDiff/diff.cpp \
+        libHDiffPatch/HDiff/private_diff/bytes_rle.cpp \
+        libHDiffPatch/HDiff/private_diff/compress_detect.cpp \
+        libHDiffPatch/HDiff/private_diff/libdivsufsort/divsufsort.c \
+        libHDiffPatch/HDiff/private_diff/libdivsufsort/divsufsort64.c \
+        libHDiffPatch/HDiff/private_diff/limit_mem_diff/adler_roll.c \
+        libHDiffPatch/HDiff/private_diff/limit_mem_diff/digest_matcher.cpp \
+        libHDiffPatch/HDiff/private_diff/limit_mem_diff/stream_serialize.cpp \
+        libHDiffPatch/HDiff/private_diff/suffix_string.cpp \
+        libHDiffPatch/HPatch/patch.c \
+        logindialog.cpp \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        user.cpp
 
 HEADERS += \
-        mainwindow.h
+        http.h \
+        libHDiffPatch/HDiff/diff.h \
+        libHDiffPatch/HDiff/diff_types.h \
+        libHDiffPatch/HDiff/private_diff/bytes_rle.h \
+        libHDiffPatch/HDiff/private_diff/compress_detect.h \
+        libHDiffPatch/HDiff/private_diff/libdivsufsort/config.h \
+        libHDiffPatch/HDiff/private_diff/libdivsufsort/divsufsort.c.inc.h \
+        libHDiffPatch/HDiff/private_diff/libdivsufsort/divsufsort.h \
+        libHDiffPatch/HDiff/private_diff/libdivsufsort/divsufsort64.h \
+        libHDiffPatch/HDiff/private_diff/libdivsufsort/divsufsort_private.h \
+        libHDiffPatch/HDiff/private_diff/libdivsufsort/sssort.c.inc.h \
+        libHDiffPatch/HDiff/private_diff/libdivsufsort/trsort.c.inc.h \
+        libHDiffPatch/HDiff/private_diff/libdivsufsort/utils.c.inc.h \
+        libHDiffPatch/HDiff/private_diff/limit_mem_diff/adler_roll.h \
+        libHDiffPatch/HDiff/private_diff/limit_mem_diff/bloom_filter.h \
+        libHDiffPatch/HDiff/private_diff/limit_mem_diff/covers.h \
+        libHDiffPatch/HDiff/private_diff/limit_mem_diff/digest_matcher.h \
+        libHDiffPatch/HDiff/private_diff/limit_mem_diff/stream_serialize.h \
+        libHDiffPatch/HDiff/private_diff/mem_buf.h \
+        libHDiffPatch/HDiff/private_diff/pack_uint.h \
+        libHDiffPatch/HDiff/private_diff/sais.hxx \
+        libHDiffPatch/HDiff/private_diff/suffix_string.h \
+        libHDiffPatch/HPatch/checksum_plugin.h \
+        libHDiffPatch/HPatch/patch.h \
+        libHDiffPatch/HPatch/patch_private.h \
+        libHDiffPatch/HPatch/patch_types.h \
+        logindialog.h \
+        mainwindow.h \
+        user.h
 
 FORMS += \
+        logindialog.ui \
         mainwindow.ui
 
 # Default rules for deployment.
