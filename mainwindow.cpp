@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include <user.h>
 
-#include <QStringList>
 #include <QMessageBox>
 #include <QDir>
 #include <QDebug>
@@ -22,12 +21,22 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_btnPlay_clicked()
 {
-    User* const user = new User(this, "trdwll", "temp12134");
-    if (user->Login())
+    //User* const user = new User(this, "trdwll", "temp12134");
+    User* const user = new User(this);
+    SUserData userdata;
+    userdata.Username = "trdwll";
+    userdata.Password = "temp1234";
+    if (user->Login(userdata))
     {
         qDebug() << "User has been authorized";
-        DownloadFile("https://trdwll.com/f/lol.patch", "Cool.exe", "tmpDir");
         ui->label->setText(user->GetUsername());
+
+        //if (!HasUpdate())
+        //{
+        //    return;
+        //}
+
+        DownloadFile("https://trdwll.com/f/lol.patch", "Cool.exe", "tmpDir");
     }
     else
     {
@@ -40,11 +49,6 @@ void MainWindow::on_btnPlay_clicked()
 
 bool MainWindow::DownloadFile(const QString &URL, const QString &FileName, const QString &Downloadlocation)
 {
-    //if (!HasUpdate())
-    //{
-    //    return;
-    //}
-
     m_tmpDir = Downloadlocation;
 
     if (!QDir(Downloadlocation).exists())

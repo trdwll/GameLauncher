@@ -3,11 +3,17 @@
 
 #include <QObject>
 
+struct SUserData
+{
+    QString Username;
+    QString Password;
+};
+
 class User : public QObject
 {
     Q_OBJECT
 public:
-    explicit User(QObject *parent = nullptr, const QString& Username = "", const QString& Password = "");
+    explicit User(QObject *parent = nullptr/*, const QString& Username = "", const QString& Password = ""*/);
     ~User();
 
     /**
@@ -16,9 +22,23 @@ public:
      */
     bool Login();
 
+    /**
+     * @brief Login the user
+     * @param UserData The data ie the user data that you want to supply
+     * @return True if user was logged in else false
+     */
+    bool Login(const SUserData& UserData);
+
     QString GetUsername() const { return m_Username; }
 
+    inline void SetUserData(const SUserData& UserData)
+    {
+        m_Username = UserData.Username;
+        m_Password = UserData.Password;
+    }
+
     bool IsLoggedin() const { return m_bIsLoggedIn; }
+    bool LoginFileExists() const { return false; }
 
 private:
 

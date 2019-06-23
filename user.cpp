@@ -10,10 +10,10 @@
 #include <QJsonDocument>
 
 
-User::User(QObject *parent, const QString& Username, const QString& Password) :
-    QObject(parent),
+User::User(QObject *parent/*, const QString& Username, const QString& Password*/) :
+    QObject(parent)/*,
     m_Username(Username),
-    m_Password(Password)
+    m_Password(Password)*/
 {
 
 }
@@ -26,6 +26,12 @@ User::~User()
 bool User::Login()
 {
     return LoginUser(m_Username, m_Password);
+}
+
+bool User::Login(const SUserData &UserData)
+{
+    SetUserData(UserData);
+    return LoginUser(UserData.Username, UserData.Password);
 }
 
 bool User::LoginUser(const QString &Username, const QString &Password)
@@ -50,6 +56,7 @@ bool User::LoginUser(const QString &Username, const QString &Password)
         {
             QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
             m_bIsLoggedIn = jsonObject["loggedin"].toBool();
+
 
             qDebug() << "2:" << m_bIsLoggedIn;
         }
