@@ -17,34 +17,15 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete m_User;
 }
 
 void MainWindow::on_btnPlay_clicked()
 {
-    //User* const user = new User(this, "trdwll", "temp12134");
-    User* const user = new User(this);
-    SUserData userdata;
-    userdata.Username = "trdwll";
-    userdata.Password = "temp1234";
-    if (user->Login(userdata))
-    {
-        qDebug() << "User has been authorized";
-        ui->label->setText(user->GetUsername());
-
-        //if (!HasUpdate())
-        //{
-        //    return;
-        //}
-
-        DownloadFile("https://trdwll.com/f/lol.patch", "Cool.exe", "tmpDir");
-    }
-    else
-    {
-        ui->label->setText("Unable to login");
-        qDebug() << "User hasn't been authenticated";
-    }
-
-    // delete user;
+    //if (HasUpdate())
+    //{
+    //    DownloadFile("https://trdwll.com/f/lol.patch", "Cool.exe", "tmpDir");
+    //}
 }
 
 bool MainWindow::DownloadFile(const QString &URL, const QString &FileName, const QString &Downloadlocation)
@@ -79,8 +60,33 @@ bool MainWindow::HasUpdate()
     return false;
 }
 
-void MainWindow::InitDownload()
+void MainWindow::on_btnLogin_clicked()
 {
+    QString Username = ui->txtUsername->toPlainText();
+    QString Password = ui->txtPassword->toPlainText();
 
+    // TODO: Check if Username or Password are empty
+
+    qDebug() << "Username: " << Username << " Password: " << Password;
+
+    m_User = new User(this);
+    SUserData userdata;
+    userdata.Username = Username;
+    userdata.Password = Password;
+    if (m_User->Login(userdata))
+    {
+        qDebug() << "User has been authorized";
+        ui->label->setText(m_User->GetUsername());
+
+        // This isn't ideal, and logging in should be done via another form rather than MainWindow
+        ui->tabWidget->removeTab(0);
+
+        ui->btnPlay->setEnabled(true);
+        ui->pbDownload->setEnabled(true);
+    }
+    else
+    {
+        ui->label->setText("Unable to login");
+        qDebug() << "User hasn't been authenticated";
+    }
 }
-

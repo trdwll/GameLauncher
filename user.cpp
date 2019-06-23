@@ -11,7 +11,7 @@
 
 
 User::User(QObject *parent/*, const QString& Username, const QString& Password*/) :
-    QObject(parent)/*,
+    QObject(parent), m_bIsLoggedIn(false)/*,
     m_Username(Username),
     m_Password(Password)*/
 {
@@ -56,7 +56,6 @@ bool User::LoginUser(const QString &Username, const QString &Password)
         {
             QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
             m_bIsLoggedIn = jsonObject["loggedin"].toBool();
-
 
             qDebug() << "2:" << m_bIsLoggedIn;
         }

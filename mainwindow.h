@@ -23,8 +23,6 @@ private:
 
     bool HasUpdate();
 
-    void InitDownload();
-
     bool DownloadFile(const QString& URL, const QString& FileName, const QString& DownloadLocation);
 
     // Store a reference for a temporary directory so we can delete it on cleanup
@@ -38,9 +36,12 @@ private:
      */
     void Patch(const QString& OldDir, const QString& NewDir, const QString& PatchFileName);
 
+    class User* m_User;
 
 private slots:
     void on_btnPlay_clicked();
+
+    void on_btnLogin_clicked();
 
 private:
     Ui::MainWindow *ui;
