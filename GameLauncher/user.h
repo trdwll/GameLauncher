@@ -63,7 +63,9 @@ private:
      * @return A hashed string
      */
     QString HashPassword(const QString& Password);
-
+public:
+    void Login2(const QString &Username, const QString &Password);
+    void handleReply(class QNetworkReply *reply);
 signals:
 
 public slots:

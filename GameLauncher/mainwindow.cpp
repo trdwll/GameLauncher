@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <user.h>
+#include <GameLauncher/user.h>
 
 #include <QMessageBox>
 #include <QDir>
@@ -69,24 +69,24 @@ void MainWindow::on_btnLogin_clicked()
 
     qDebug() << "Username: " << Username << " Password: " << Password;
 
-    m_User = new User(this);
-    SUserData userdata;
-    userdata.Username = Username;
-    userdata.Password = Password;
-    if (m_User->Login(userdata))
-    {
+//    m_User = new User(this);
+//    SUserData userdata;
+//    userdata.Username = Username;
+//    userdata.Password = Password;
+//    if (m_User->Login(userdata))
+//    {
         qDebug() << "User has been authorized";
-        ui->label->setText(m_User->GetUsername());
+//        ui->label->setText(m_User->GetUsername());
 
         // This isn't ideal, and logging in should be done via another form rather than MainWindow
         ui->tabWidget->removeTab(0);
 
         ui->btnPlay->setEnabled(true);
         ui->pbDownload->setEnabled(true);
-    }
-    else
-    {
-        ui->label->setText("Unable to login");
-        qDebug() << "User hasn't been authenticated";
-    }
+//    }
+//    else
+//    {
+//        ui->label->setText("Unable to login");
+//        qDebug() << "User hasn't been authenticated";
+//    }
 }

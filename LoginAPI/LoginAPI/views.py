@@ -19,7 +19,6 @@ class LoginView(View):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-
         # The current method of validation shouldn't be used in production since we're passing the password to the server via plaintext and not hashed
         json = {}
         user = authenticate(username=username, password=password)
@@ -27,6 +26,5 @@ class LoginView(View):
             json = {'status': 'Ok', 'msg': 'User authenticated', 'loggedin': True}
         else:
             json = {'status': 'Error', 'msg': 'User not authenticated', 'loggedin': False}
-
 
         return JsonResponse(json)

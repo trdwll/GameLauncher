@@ -8,6 +8,7 @@
 #include <QNetworkReply>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QEventLoop>
 
 
 User::User(QObject *parent/*, const QString& Username, const QString& Password*/) :
@@ -34,6 +35,7 @@ bool User::Login(const SUserData &UserData)
     return LoginUser(UserData.Username, UserData.Password);
 }
 
+
 bool User::LoginUser(const QString &Username, const QString &Password)
 {
     qDebug() << "1: " << m_bIsLoggedIn;
@@ -51,17 +53,20 @@ bool User::LoginUser(const QString &Username, const QString &Password)
     params.addQueryItem("username", Username);
     params.addQueryItem("password", Password);
 
-    connect(manager, &QNetworkAccessManager::finished, this,
-        [=](QNetworkReply* reply)
-        {
-            QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
-            m_bIsLoggedIn = jsonObject["loggedin"].toBool();
-
-            qDebug() << "2:" << m_bIsLoggedIn;
-        }
-    );
-
     manager->post(request, params.query().toUtf8());
+    connect(manager, SIGNAL(onFinished(QNetworkReply*)), SLOT(handleReply(QNetworkReply*)));
+
+//    connect(manager, &QNetworkAccessManager::finished, this,
+//        [=](QNetworkReply* reply)
+//        {
+//            QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
+//            m_bIsLoggedIn = jsonObject["loggedin"].toBool();
+
+//            qDebug() << "2:" << m_bIsLoggedIn;
+//        }
+//    );
+
+    // manager->post(request, params.query().toUtf8());
 
     if (m_bIsLoggedIn)
     {
@@ -70,6 +75,12 @@ bool User::LoginUser(const QString &Username, const QString &Password)
 
     qDebug() << "3: " << m_bIsLoggedIn;
     return m_bIsLoggedIn;
+}
+
+void User::handleReply(QNetworkReply* reply)
+{
+    QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
+    m_bIsLoggedIn = jsonObject["loggedin"].toBool();
 }
 
 QString User::HashPassword(const QString &Password)
