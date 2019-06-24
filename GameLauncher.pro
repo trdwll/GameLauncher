@@ -25,49 +25,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        GameLauncher/http.cpp \
-        vendor/libHDiffPatch/HDiff/diff.cpp \
-        vendor/libHDiffPatch/HDiff/private_diff/bytes_rle.cpp \
-        vendor/libHDiffPatch/HDiff/private_diff/compress_detect.cpp \
-        vendor/libHDiffPatch/HDiff/private_diff/libdivsufsort/divsufsort.c \
-        vendor/libHDiffPatch/HDiff/private_diff/libdivsufsort/divsufsort64.c \
-        vendor/libHDiffPatch/HDiff/private_diff/limit_mem_diff/adler_roll.c \
-        vendor/libHDiffPatch/HDiff/private_diff/limit_mem_diff/digest_matcher.cpp \
-        vendor/libHDiffPatch/HDiff/private_diff/limit_mem_diff/stream_serialize.cpp \
-        vendor/libHDiffPatch/HDiff/private_diff/suffix_string.cpp \
-        vendor/libHDiffPatch/HPatch/patch.c \
         GameLauncher/logindialog.cpp \
         GameLauncher/main.cpp \
         GameLauncher/mainwindow.cpp \
         GameLauncher/user.cpp
 
 HEADERS += \
-        GameLauncher/http.h \
-        vendor/libHDiffPatch/HDiff/diff.h \
-        vendor/libHDiffPatch/HDiff/diff_types.h \
-        vendor/libHDiffPatch/HDiff/private_diff/bytes_rle.h \
-        vendor/libHDiffPatch/HDiff/private_diff/compress_detect.h \
-        vendor/libHDiffPatch/HDiff/private_diff/libdivsufsort/config.h \
-        vendor/libHDiffPatch/HDiff/private_diff/libdivsufsort/divsufsort.c.inc.h \
-        vendor/libHDiffPatch/HDiff/private_diff/libdivsufsort/divsufsort.h \
-        vendor/libHDiffPatch/HDiff/private_diff/libdivsufsort/divsufsort64.h \
-        vendor/libHDiffPatch/HDiff/private_diff/libdivsufsort/divsufsort_private.h \
-        vendor/libHDiffPatch/HDiff/private_diff/libdivsufsort/sssort.c.inc.h \
-        vendor/libHDiffPatch/HDiff/private_diff/libdivsufsort/trsort.c.inc.h \
-        vendor/libHDiffPatch/HDiff/private_diff/libdivsufsort/utils.c.inc.h \
-        vendor/libHDiffPatch/HDiff/private_diff/limit_mem_diff/adler_roll.h \
-        vendor/libHDiffPatch/HDiff/private_diff/limit_mem_diff/bloom_filter.h \
-        vendor/libHDiffPatch/HDiff/private_diff/limit_mem_diff/covers.h \
-        vendor/libHDiffPatch/HDiff/private_diff/limit_mem_diff/digest_matcher.h \
-        vendor/libHDiffPatch/HDiff/private_diff/limit_mem_diff/stream_serialize.h \
-        vendor/libHDiffPatch/HDiff/private_diff/mem_buf.h \
-        vendor/libHDiffPatch/HDiff/private_diff/pack_uint.h \
-        vendor/libHDiffPatch/HDiff/private_diff/sais.hxx \
-        vendor/libHDiffPatch/HDiff/private_diff/suffix_string.h \
-        vendor/libHDiffPatch/HPatch/checksum_plugin.h \
-        vendor/libHDiffPatch/HPatch/patch.h \
-        vendor/libHDiffPatch/HPatch/patch_private.h \
-        vendor/libHDiffPatch/HPatch/patch_types.h \
         GameLauncher/logindialog.h \
         GameLauncher/mainwindow.h \
         GameLauncher/user.h
