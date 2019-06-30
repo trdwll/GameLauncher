@@ -152,10 +152,24 @@
      <string>TextLabel</string>
     </property>
    </widget>
+   <widget class="QLabel" name="lbDownloadInfo">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>310</y>
+      <width>441</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
    <zorder>tabWidget</zorder>
    <zorder>btnPlay</zorder>
    <zorder>pbDownload</zorder>
    <zorder>label</zorder>
+   <zorder>lbDownloadInfo</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

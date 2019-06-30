@@ -27,6 +27,20 @@ MainWindow::~MainWindow()
 
 QString MainWindow::GetPatchToolPath()
 {
+	/**
+	 * 
+#if defined Q_OS_WIN
+	m_platform = "windows";
+#elif defined Q_OS_MAC
+	m_platform = "osx";
+#elif defined Q_OS_LINUX
+	m_platform = "linux";
+#elif defined Q_OS_ANDROID
+	m_platform = "android";
+#elif defined Q_OS_IOS
+	m_platform = "ios";
+#endif
+	 */
     // TODO: add architecture
     QString os, arch, file;
     QString kernel = QSysInfo::kernelType();

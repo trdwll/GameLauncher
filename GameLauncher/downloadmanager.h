@@ -15,6 +15,7 @@ public:
 
     // TODO: Add possibility to download all files in a directory instead of single files
     bool DownloadFile(const QUrl& url, const QString& FileName = "");
+	QString GetTimeRemaining(qint64 bytesReceived, qint64 bytesTotal);
 
 public slots:
     void CancelDownload();
@@ -30,6 +31,8 @@ private:
     QNetworkReply* m_currentReply;
     QFile* m_file;
     QNetworkAccessManager m_manager;
+
+	uint m_startTime;
 };
 
 #endif // DOWNLOADMANAGER_H

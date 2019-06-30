@@ -20,12 +20,9 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-
 private:
     const QString m_DownloadBaseURL = "https://trdwll.com/f/Game/bin/";
     const QString m_UpdateCheckURL = "https://trdwll.com/f/Game/version.json";
-
-    bool HasUpdate();
 
     bool DownloadFile(const QString& URL, const QString& FileName, const QString& DownloadLocation);
 
@@ -35,16 +32,21 @@ private:
     /**
      * @brief Patch old content with new content
      * @param OldDir        If the directory doesn't exist then the call gets aborted
-     * @param NewDir        If the directoy doesn't exist then it'll be created
+     * @param NewDir        If the directory doesn't exist then it'll be created
      * @param PatchFileName
      */
     void Patch(const QString& OldDir, const QString& NewDir, const QString& PatchFileName);
 
     class User* m_User;
 
+	bool HasUpdate();
+
+	class QNetworkReply* m_CurrentUpdateReply;
 
 private:
     DownloadManager m_DownloadManager;
+
+	qint64 m_StartTime;
 
 private slots:
     void on_btnPlay_clicked();

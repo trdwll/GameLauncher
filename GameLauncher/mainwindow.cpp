@@ -1,13 +1,18 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <GameLauncher/user.h>
+#include "GameLauncher/user.h"
+#include "GameLauncher/utils.h"
 
+#include <QNetworkReply>
 #include <QMessageBox>
 #include <QDir>
 #include <QDebug>
 
 #include <QFileDialog>
 #include <QStandardPaths>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QVersionNumber>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -24,16 +29,51 @@ MainWindow::~MainWindow()
     delete m_User;
 }
 
+bool MainWindow::HasUpdate()
+{
+	QNetworkAccessManager manager;
+	QNetworkRequest request(m_UpdateCheckURL);
+
+	m_CurrentUpdateReply = manager.get(request);
+
+	QJsonObject jsonObject = QJsonDocument::fromJson(m_CurrentUpdateReply->readAll()).object();
+
+	// We could also check the checksums (we would have to store checksums of all files on the client and server then compare - then we only download the specific files and patch them), but that could be a performance issue down the line
+
+	QFile file(qApp->applicationDirPath() + QDir::separator() + "version.txt");
+	file.open(QIODevice::ReadOnly);
+	QString localVersionFileContent = file.readAll();
+
+	QVersionNumber localVersion(QVersionNumber::fromString(localVersionFileContent));
+	QVersionNumber remoteVersion(QVersionNumber::fromString(jsonObject["CurrentVersion"].toString()));
+	
+	// -1 == local < remote, 0 == local == remote, 1 == local > remote
+	if (QVersionNumber::compare(localVersion, remoteVersion) == -1)
+	{
+		return true;
+	}
+	/**
+	{
+		"CurrentVersion": "1.0.0.0",
+		"ReleaseDate": "June 30, 2019"
+	}
+	*/
+
+	return false;
+}
+
+
 void MainWindow::on_btnPlay_clicked()
 {
-    qDebug() << QDir::currentPath();
-    QString url = "http://www.ovh.net/files/10Mio.dat";
-    m_DownloadManager.DownloadFile(url);
+	// if (Utils::HasUpdate())
+	{
+		qDebug() << QDir::currentPath();
+		QString url = "http://www.ovh.net/files/10Mio.dat";
+		// QString url = "http://www.ovh.net/files/10Gio.dat";
+		m_DownloadManager.DownloadFile(url);
 
-    //if (HasUpdate())
-    //{
-    //    DownloadFile("https://trdwll.com/f/lol.patch", "Cool.exe", "tmpDir");
-    //}
+		return;
+	}
 }
 
 bool MainWindow::DownloadFile(const QString &URL, const QString &FileName, const QString &Downloadlocation)
@@ -61,11 +101,6 @@ void MainWindow::Patch(const QString &OldDir, const QString &NewDir, const QStri
     {
         QDir().mkdir(NewDir);
     }
-}
-
-bool MainWindow::HasUpdate()
-{
-    return false;
 }
 
 void MainWindow::on_btnLogin_clicked()
@@ -103,4 +138,14 @@ void MainWindow::onUpdateProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
     ui->pbDownload->setMaximum(bytesTotal);
     ui->pbDownload->setValue(bytesReceived);
+
+	QString str = "Downloading " + Utils::ConvertToHuman(bytesReceived) + " / " + Utils::ConvertToHuman(bytesTotal) + " Estimated Remaining Time: " + m_DownloadManager.GetTimeRemaining(bytesReceived, bytesTotal);
+	ui->lbDownloadInfo->setText(str);
+
+	if (bytesReceived == bytesTotal)
+	{
+		ui->lbDownloadInfo->setText("Download Complete");
+		ui->pbDownload->setVisible(false);
+		ui->lbDownloadInfo->setVisible(false);
+	}
 }
