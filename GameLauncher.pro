@@ -25,12 +25,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        GameLauncher/downloadmanager.cpp \
         GameLauncher/logindialog.cpp \
         GameLauncher/main.cpp \
         GameLauncher/mainwindow.cpp \
         GameLauncher/user.cpp
 
 HEADERS += \
+        GameLauncher/downloadmanager.h \
         GameLauncher/logindialog.h \
         GameLauncher/mainwindow.h \
         GameLauncher/user.h

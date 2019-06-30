@@ -6,12 +6,16 @@
 #include <QDir>
 #include <QDebug>
 
+#include <QFileDialog>
+#include <QStandardPaths>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    connect(&m_DownloadManager, &DownloadManager::UpdateDownloadProgress, this, &MainWindow::onUpdateProgress);
 }
 
 MainWindow::~MainWindow()
@@ -22,6 +26,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_btnPlay_clicked()
 {
+    qDebug() << QDir::currentPath();
+    QString url = "http://www.ovh.net/files/10Mio.dat";
+    m_DownloadManager.DownloadFile(url);
+
     //if (HasUpdate())
     //{
     //    DownloadFile("https://trdwll.com/f/lol.patch", "Cool.exe", "tmpDir");
@@ -88,5 +96,11 @@ void MainWindow::on_btnLogin_clicked()
 //    {
 //        ui->label->setText("Unable to login");
 //        qDebug() << "User hasn't been authenticated";
-//    }
+        //    }
+}
+
+void MainWindow::onUpdateProgress(qint64 bytesReceived, qint64 bytesTotal)
+{
+    ui->pbDownload->setMaximum(bytesTotal);
+    ui->pbDownload->setValue(bytesReceived);
 }

@@ -2,7 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "GameLauncher/downloadmanager.h"
+
+
 class QStringList;
+
 
 namespace Ui {
 class MainWindow;
@@ -19,7 +23,7 @@ public:
 
 private:
     const QString m_DownloadBaseURL = "https://trdwll.com/f/Game/bin/";
-    const QString m_UpdateCheckURL = "https://trdwll.com/f/Game/version.txt";
+    const QString m_UpdateCheckURL = "https://trdwll.com/f/Game/version.json";
 
     bool HasUpdate();
 
@@ -38,10 +42,16 @@ private:
 
     class User* m_User;
 
+
+private:
+    DownloadManager m_DownloadManager;
+
 private slots:
     void on_btnPlay_clicked();
 
     void on_btnLogin_clicked();
+
+    void onUpdateProgress(qint64 bytesReceived, qint64 bytesTotal);
 
 private:
     Ui::MainWindow *ui;
