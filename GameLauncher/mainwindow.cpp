@@ -21,59 +21,65 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     connect(&m_DownloadManager, &DownloadManager::UpdateDownloadProgress, this, &MainWindow::onUpdateProgress);
+
+	m_bHasUpdate = CheckForUpdates();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
     delete m_User;
+	delete m_NetworkManager;
 }
-
-bool MainWindow::HasUpdate()
-{
-	QNetworkAccessManager manager;
-	QNetworkRequest request(m_UpdateCheckURL);
-
-	m_CurrentUpdateReply = manager.get(request);
-
-	QJsonObject jsonObject = QJsonDocument::fromJson(m_CurrentUpdateReply->readAll()).object();
-
-	// We could also check the checksums (we would have to store checksums of all files on the client and server then compare - then we only download the specific files and patch them), but that could be a performance issue down the line
-
-	QFile file(qApp->applicationDirPath() + QDir::separator() + "version.txt");
-	file.open(QIODevice::ReadOnly);
-	QString localVersionFileContent = file.readAll();
-
-	QVersionNumber localVersion(QVersionNumber::fromString(localVersionFileContent));
-	QVersionNumber remoteVersion(QVersionNumber::fromString(jsonObject["CurrentVersion"].toString()));
-	
-	// -1 == local < remote, 0 == local == remote, 1 == local > remote
-	if (QVersionNumber::compare(localVersion, remoteVersion) == -1)
-	{
-		return true;
-	}
-	/**
-	{
-		"CurrentVersion": "1.0.0.0",
-		"ReleaseDate": "June 30, 2019"
-	}
-	*/
-
-	return false;
-}
-
 
 void MainWindow::on_btnPlay_clicked()
 {
-	// if (Utils::HasUpdate())
+	if (m_bHasUpdate)
 	{
-		qDebug() << QDir::currentPath();
-		QString url = "http://www.ovh.net/files/10Mio.dat";
-		// QString url = "http://www.ovh.net/files/10Gio.dat";
-		m_DownloadManager.DownloadFile(url);
+		qDebug() << "update available";
+		m_DownloadManager.DownloadFile(m_DownloadManager.m_DownloadURL);
 
 		return;
 	}
+
+	qDebug() << "Play the game boi";
+}
+
+bool MainWindow::CheckForUpdates()
+{
+	m_NetworkManager = new QNetworkAccessManager();
+	QObject::connect(m_NetworkManager, &QNetworkAccessManager::finished, this,
+		[=](QNetworkReply* reply) 
+		{
+			if (reply->error()) 
+			{
+				qDebug() << "ERROR (CheckForUpdates):" << reply->errorString();
+				return;
+			}
+
+			QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
+			m_RemoteVersion = jsonObject["CurrentVersion"].toString();
+
+			QFile file(qApp->applicationDirPath() + QDir::separator() + "version.txt");
+			file.open(QIODevice::ReadOnly);
+			m_LocalVersion = file.readAll();
+
+			qDebug() << "jsonObject: " << jsonObject;
+			qDebug() << "Local Version: " << m_LocalVersion;
+			qDebug() << "Remote Version: " << m_RemoteVersion;
+			bool res = QVersionNumber::compare(QVersionNumber::fromString(m_LocalVersion), QVersionNumber::fromString(m_RemoteVersion)) == -1;
+			qDebug() << res;
+
+			ui->lbDownloadInfo->setText(res ? "Update " + m_RemoteVersion + " available! You're on " + m_LocalVersion + "." : "You're on the current version!");
+		}
+	);
+
+	// We could also check the checksums (we would have to store checksums of all files on the client and server then compare - then we only download the specific files and patch them), but that could be a performance issue down the line
+
+	m_Request.setUrl(QUrl(m_UpdateCheckURL));
+	m_NetworkManager->get(m_Request);
+
+	return QVersionNumber::compare(QVersionNumber::fromString(m_LocalVersion), QVersionNumber::fromString(m_RemoteVersion)) == -1;
 }
 
 bool MainWindow::DownloadFile(const QString &URL, const QString &FileName, const QString &Downloadlocation)
@@ -147,5 +153,7 @@ void MainWindow::onUpdateProgress(qint64 bytesReceived, qint64 bytesTotal)
 		ui->lbDownloadInfo->setText("Download Complete");
 		ui->pbDownload->setVisible(false);
 		ui->lbDownloadInfo->setVisible(false);
+
+		m_DownloadManager.InitInstall();
 	}
 }

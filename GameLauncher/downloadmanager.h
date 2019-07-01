@@ -13,9 +13,13 @@ class DownloadManager : public QObject
 public:
     explicit DownloadManager(QObject* parent = nullptr);
 
+	const class QUrl m_DownloadURL = "http://www.ovh.net/files/10Mio.dat";
+
     // TODO: Add possibility to download all files in a directory instead of single files
     bool DownloadFile(const QUrl& url, const QString& FileName = "");
 	QString GetTimeRemaining(qint64 bytesReceived, qint64 bytesTotal);
+
+	void InitInstall();
 
 public slots:
     void CancelDownload();

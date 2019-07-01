@@ -87,6 +87,12 @@ QString DownloadManager::GetTimeRemaining(qint64 bytesReceived, qint64 bytesTota
 	return "unknown";
 }
 
+void DownloadManager::InitInstall()
+{
+	// TODO: Change the version.txt to the newly installed version
+	// TODO: actually apply the patch that we just downloaded
+}
+
 void DownloadManager::OnReadyRead()
 {
     if (m_file)

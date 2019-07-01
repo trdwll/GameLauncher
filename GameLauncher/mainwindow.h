@@ -39,9 +39,14 @@ private:
 
     class User* m_User;
 
-	bool HasUpdate();
+	/** Update code */
+	QNetworkAccessManager* m_NetworkManager;
+	QNetworkRequest m_Request;
+	bool CheckForUpdates();
+	bool m_bHasUpdate;
 
-	class QNetworkReply* m_CurrentUpdateReply;
+	QString m_RemoteVersion;
+	QString m_LocalVersion;
 
 private:
     DownloadManager m_DownloadManager;
