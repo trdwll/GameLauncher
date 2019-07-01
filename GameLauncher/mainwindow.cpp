@@ -118,26 +118,37 @@ void MainWindow::on_btnLogin_clicked()
 
     qDebug() << "Username: " << Username << " Password: " << Password;
 
-//    m_User = new User(this);
-//    SUserData userdata;
-//    userdata.Username = Username;
-//    userdata.Password = Password;
-//    if (m_User->Login(userdata))
-//    {
-        qDebug() << "User has been authorized";
+	/**
+	 * qDebug() << "User has been authorized";
 //        ui->label->setText(m_User->GetUsername());
 
-        // This isn't ideal, and logging in should be done via another form rather than MainWindow
+		// This isn't ideal, and logging in should be done via another form rather than MainWindow
+		ui->tabWidget->removeTab(0);
+
+		ui->btnPlay->setEnabled(true);
+		ui->pbDownload->setEnabled(true);
+	 */
+
+    m_User = new User(this);
+    SUserData userdata;
+    userdata.Username = Username;
+    userdata.Password = Password;
+	m_User->Login(userdata);
+    if (m_User->IsLoggedin())
+    {
+        qDebug() << "User has been authorized";
+        ui->label->setText(m_User->GetUsername());
+
         ui->tabWidget->removeTab(0);
 
         ui->btnPlay->setEnabled(true);
         ui->pbDownload->setEnabled(true);
-//    }
-//    else
-//    {
-//        ui->label->setText("Unable to login");
-//        qDebug() << "User hasn't been authenticated";
-        //    }
+    }
+    else
+    {
+        ui->label->setText("Unable to login");
+        qDebug() << "User hasn't been authenticated";
+    }
 }
 
 void MainWindow::onUpdateProgress(qint64 bytesReceived, qint64 bytesTotal)

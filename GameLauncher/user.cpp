@@ -11,10 +11,8 @@
 #include <QEventLoop>
 
 
-User::User(QObject *parent/*, const QString& Username, const QString& Password*/) :
-    QObject(parent), m_bIsLoggedIn(false)/*,
-    m_Username(Username),
-    m_Password(Password)*/
+User::User(QObject *parent) :
+    QObject(parent)
 {
 
 }
@@ -24,68 +22,69 @@ User::~User()
 
 }
 
-bool User::Login()
+void User::Login(const SUserData &UserData)
 {
-    return LoginUser(m_Username, m_Password);
+	qDebug() << "Login: User is logged in: " << m_bIsLoggedIn;
+	// TODO: Check if the auth file exists and if so then don't request the token and just login the user, if the auth fails then we should get the new token and login
+	RequestToken(UserData.Username, UserData.Password);
 }
 
-bool User::Login(const SUserData &UserData)
+void User::RequestToken(const QString& Username, const QString& Password)
 {
-    SetUserData(UserData);
-    return LoginUser(UserData.Username, UserData.Password);
+	QNetworkAccessManager* manager = new QNetworkAccessManager();
+
+	QNetworkRequest request(m_LoginAPIRequestTokenURL);
+
+	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+
+	QUrlQuery params;
+	params.addQueryItem("username", Username);
+	params.addQueryItem("password", Password);
+
+	connect(manager, &QNetworkAccessManager::finished, this,
+	    [=](QNetworkReply* reply)
+	    {
+			if (reply->error())
+			{
+				qDebug() << "ERROR (RequestToken):" << reply->errorString();
+				return;
+			}
+
+	        QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
+
+			m_AuthToken = jsonObject["token"].toString();
+
+			LoginUser(m_AuthToken);
+			m_Username = Username;
+	    }
+	);
+
+	manager->post(request, params.query().toUtf8());
 }
 
-
-bool User::LoginUser(const QString &Username, const QString &Password)
+void User::LoginUser(const QString& AuthToken)
 {
-    qDebug() << "1: " << m_bIsLoggedIn;
+    QNetworkAccessManager* manager = new QNetworkAccessManager();
 
-    QNetworkAccessManager* const manager = new QNetworkAccessManager(this);
+    QNetworkRequest request(m_LoginAPIURL);
 
-    QUrl url(m_LoginAPIURL);
-    QNetworkRequest request(url);
+    connect(manager, &QNetworkAccessManager::finished, this,
+        [=](QNetworkReply* reply)
+        {
+			if (reply->error())
+			{
+				qDebug() << "ERROR (LoginUser):" << reply->errorString();
+				return;
+			}
 
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+            QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
+            m_bIsLoggedIn = jsonObject["loggedin"].toBool();
 
-    // The current method of validation of the user is insecure and shouldn't be used in production
-    // we're not hashing the password when we send it to the API
-    QUrlQuery params;
-    params.addQueryItem("username", Username);
-    params.addQueryItem("password", Password);
+			qDebug() << "LoginUser: User is logged in: " << m_bIsLoggedIn << " with the token: " << AuthToken;
+        }
+    );
 
-    manager->post(request, params.query().toUtf8());
-    connect(manager, SIGNAL(onFinished(QNetworkReply*)), SLOT(handleReply(QNetworkReply*)));
-
-//    connect(manager, &QNetworkAccessManager::finished, this,
-//        [=](QNetworkReply* reply)
-//        {
-//            QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
-//            m_bIsLoggedIn = jsonObject["loggedin"].toBool();
-
-//            qDebug() << "2:" << m_bIsLoggedIn;
-//        }
-//    );
-
-    // manager->post(request, params.query().toUtf8());
-
-    if (m_bIsLoggedIn)
-    {
-        // TODO: Create a config file on the client's machine with whatever details to keep the client signed in
-    }
-
-    qDebug() << "3: " << m_bIsLoggedIn;
-    return m_bIsLoggedIn;
-}
-
-void User::handleReply(QNetworkReply* reply)
-{
-    QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
-    m_bIsLoggedIn = jsonObject["loggedin"].toBool();
-}
-
-QString User::HashPassword(const QString &Password)
-{
-    // https://stackoverflow.com/questions/37763396/getting-sha1-hash-from-qstring
-    return QString("%1").arg(QString(QCryptographicHash::hash(Password.toUtf8(), QCryptographicHash::Sha1).toHex()));
+	request.setRawHeader("Authorization", ("Token " + AuthToken).toLocal8Bit());
+    manager->get(request);
 }
 

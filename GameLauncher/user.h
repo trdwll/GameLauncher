@@ -18,54 +18,27 @@ public:
 
     /**
      * @brief Login the user
-     * @return True if user was logged in else false
-     */
-    bool Login();
-
-    /**
-     * @brief Login the user
      * @param UserData The data ie the user data that you want to supply
-     * @return True if user was logged in else false
      */
-    bool Login(const SUserData& UserData);
+    void Login(const SUserData& UserData);
 
-    QString GetUsername() const { return m_Username; }
+	inline QString GetUsername() const { return m_Username; }
 
-    inline void SetUserData(const SUserData& UserData)
-    {
-        m_Username = UserData.Username;
-        m_Password = UserData.Password;
-    }
-
-    bool IsLoggedin() const { return m_bIsLoggedIn; }
-    bool LoginFileExists() const { return false; }
+	inline bool IsLoggedin() const { return m_bIsLoggedIn; }
+	inline bool LoginFileExists() const { return false; }
 
 private:
 
-    const QString m_LoginAPIURL = "http://localhost:8000/api/login/";
+	const QString m_LoginAPIRequestTokenURL = "http://localhost:8000/api/login/request-token/"; // Requires username and password
+	const QString m_LoginAPIURL = "http://localhost:8000/api/login/"; // Requires the token from the url above
 
     QString m_Username;
-    QString m_Password;
+	QString m_AuthToken;
 
-    bool m_bIsLoggedIn;
+    bool m_bIsLoggedIn = false;
 
-    /**
-     * @brief Login the user with the specified details
-     * @param Username  The username of the user
-     * @param Password  The password for the user's account
-     * @return True if user was logged in else false
-     */
-    bool LoginUser(const QString& Username, const QString& Password);
-
-    /**
-     * @brief Hash a string (password)
-     * @param Password  The string that you want to hash
-     * @return A hashed string
-     */
-    QString HashPassword(const QString& Password);
-public:
-    void Login2(const QString &Username, const QString &Password);
-    void handleReply(class QNetworkReply *reply);
+	void RequestToken(const QString& Username, const QString& Password);
+	void LoginUser(const QString& AuthToken);
 signals:
 
 public slots:
